@@ -15,5 +15,10 @@ namespace net_ef_videogame
         public string Country { get; set; }
 
         public List<Videogame> Videogames { get; set; }
+
+        public override string ToString()
+        {
+            return $"Software House id: {SoftwareHouseId}, Software Name {Name}";
+        }
     }
 }

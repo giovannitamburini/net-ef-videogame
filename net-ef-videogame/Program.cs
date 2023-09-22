@@ -22,16 +22,11 @@ namespace net_ef_videogame
             Fatto questo, ogni volta che creiamo un nuovo videogioco dobbiamo abbinargli la software house che l’ha prodotto (che dobbiamo aver precedentemente inserito in tabella), chiedendo all’utente l’id della software house e impostandolo nell’entity del videogame.
 
             Realizzare quindi tutte le entity e le migration necessarie per creare il database e implementare tutte le richieste dell’esercizio.
+
+            BONUS : aggiungere un’altra voce di menu
+            stampa tutti i videogiochi prodotti da una software house (all’utente verrà chiesto l’id della software house della quale mostrare i videogame)
             -------------------------------------------------------------------------------------
              */
-
-            //Videogame newVideogame = new Videogame()
-            //{
-            //    Name = "Call Of Duty",
-            //    Overview = "Overview of Call Of Duty",
-            //    Release_date = DateTime.Parse("21/12/2022"),
-            //    SoftwareHouseId = 1
-            //};
 
             // mi creo delle nuove Software House
             //SoftwareHouse firstSoftwareHouse = new SoftwareHouse()
@@ -96,7 +91,8 @@ namespace net_ef_videogame
 3 - ricercare un videogioco per id
 4 - ricercare tutti i videogiochi aventi il nome contenente una determinata stringa inserita in input
 5 - cancellare un videogioco
-6 - chiudere il programma
+6 - stampa tutti i videogiochi prodotti da una software house
+7 - chiudere il programma
 ");
 
                 Console.Write("Prego seleziona l'opzione che desideri effettuare: ");
@@ -150,15 +146,13 @@ namespace net_ef_videogame
                             {
                                 Console.WriteLine(ex.Message);
                             }
-
-
                         }
 
                         break;
 
                     case 2:
 
-                        Console.WriteLine("Hai selezionato l'opzione 2 - inserire un nuovo videogioco");
+                        Console.WriteLine("Hai selezionato l'opzione 2: inserire un nuovo videogioco");
 
                         Console.WriteLine("Inserisci i dati del videogame");
 
@@ -171,7 +165,24 @@ namespace net_ef_videogame
                         Console.Write("Inserisci la data di realizzazione del videogame (dd/MM/yyyy): ");
                         DateTime releaseDate = DateTime.Parse(Console.ReadLine());
 
-                        Console.Write("Inserisci l'id della casa di produzione del videogame: ");
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                List<SoftwareHouse> softwareHouses = db.SoftwareHouses.ToList<SoftwareHouse>();
+
+                                foreach(SoftwareHouse sh in softwareHouses)
+                                {
+                                    Console.WriteLine(sh);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+
+                        Console.Write("Inserisci l'id della softwarehouse tra l'elenco fornito per associare il vg alla sh: ");
                         long softwareHouseId = long.Parse(Console.ReadLine());
 
                         Videogame newVideogame = new Videogame()
@@ -203,7 +214,7 @@ namespace net_ef_videogame
 
                     case 3:
 
-                        Console.WriteLine("Hai selezionato l'opzione 2: ricercare un videogioco per id");
+                        Console.WriteLine("Hai selezionato l'opzione 3: ricercare un videogioco per id");
 
                         Console.Write("Inserisci l'id del videogame che vuoi cercare: ");
                         long idVideogame = long.Parse(Console.ReadLine());
@@ -229,7 +240,7 @@ namespace net_ef_videogame
 
                     case 4:
 
-                        Console.WriteLine("Hai selezionato l'opzione 3: ricercare tutti i videogiochi aventi il nome contenente una determinata stringa inserita in input");
+                        Console.WriteLine("Hai selezionato l'opzione 4: ricercare tutti i videogiochi aventi il nome contenente una determinata stringa inserita in input");
 
                         Console.Write("Inserisci una stringa per ricercare uno o più videogames che contengono nel nome la stringa da te inserita: ");
                         string stringtoSearch = Console.ReadLine();
@@ -242,7 +253,7 @@ namespace net_ef_videogame
 
                                 List<Videogame> videogamesFoundedByString = db.Videogames.Where(vg => vg.Name.Contains(stringtoSearch)).ToList();
 
-                                foreach(Videogame vg in videogamesFoundedByString)
+                                foreach (Videogame vg in videogamesFoundedByString)
                                 {
 
                                     Console.WriteLine(vg);
@@ -257,7 +268,7 @@ namespace net_ef_videogame
                         break;
 
                     case 5:
-                        Console.WriteLine("Hai selezionato l'opzione 4: cancellare un videogioco");
+                        Console.WriteLine("Hai selezionato l'opzione 5: cancellare un videogioco");
 
                         Console.Write("Inserisci l'id del videogame che vuoi eliminare: ");
                         long idVideogameToBeDeleted = long.Parse(Console.ReadLine());
@@ -275,7 +286,7 @@ namespace net_ef_videogame
                                 db.SaveChanges();
 
                                 Console.WriteLine($"Il videogame con id '{videogameToDelete.VideogameId}' e nome '{videogameToDelete.Name}' è stato eliminato");
-                                
+
                             }
                             catch (Exception ex)
                             {
@@ -286,6 +297,35 @@ namespace net_ef_videogame
                         break;
 
                     case 6:
+                        Console.WriteLine("Hai selezionato l'opzione 6: stampa tutti i videogiochi prodotti da una software house");
+
+                        Console.Write("Inseirisci l'id della software house per ottenere i suoi videogames: ");
+                        long softwareHouseIdToSearch = long.Parse(Console.ReadLine());
+
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
+
+                                List<Videogame> videogamesBySoftwareHouseId = db.Videogames.Where(vg => vg.SoftwareHouseId == softwareHouseIdToSearch).ToList();
+
+                                foreach(Videogame vg in videogamesBySoftwareHouseId)
+                                {
+                                    Console.WriteLine(vg);
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+
+
+                        break;
+
+                    case 7:
 
                         Console.WriteLine("Hai selezionato l'opzione 5: chiudere il programma");
 

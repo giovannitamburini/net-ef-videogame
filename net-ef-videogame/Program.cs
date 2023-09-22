@@ -259,6 +259,30 @@ namespace net_ef_videogame
                     case 5:
                         Console.WriteLine("Hai selezionato l'opzione 4: cancellare un videogioco");
 
+                        Console.Write("Inserisci l'id del videogame che vuoi eliminare: ");
+                        long idVideogameToBeDeleted = long.Parse(Console.ReadLine());
+
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                Videogame videogameToDelete = db.Videogames.SingleOrDefault(vg => vg.VideogameId == idVideogameToBeDeleted);
+
+                                //Videogame videogamesFoundedByString = db.Videogames.Where(vg => vg.VideogameId == idVideogameToBeDeleted).First();
+
+                                db.Videogames.Remove(videogameToDelete);
+
+                                db.SaveChanges();
+
+                                Console.WriteLine($"Il videogame con id '{videogameToDelete.VideogameId}' e nome '{videogameToDelete.Name}' è stato eliminato");
+                                
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+
                         break;
 
                     case 6:

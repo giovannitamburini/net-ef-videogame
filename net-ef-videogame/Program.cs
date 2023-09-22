@@ -138,10 +138,10 @@
                             try
                             {
                                 db.Add(newSoftwareHouse);
-                                
+
                                 db.SaveChanges();
 
-                                Console.WriteLine("La Software House è stata aggiuntea con successo");
+                                Console.WriteLine("La Software House è stata aggiunta con successo");
 
                             }
                             catch (Exception ex)
@@ -158,6 +158,44 @@
 
                         Console.WriteLine("Hai selezionato l'opzione 2 - inserire un nuovo videogioco");
 
+                        Console.WriteLine("Inserisci i dati del videogame");
+
+                        Console.Write("Inserisci il nome del videogame: ");
+                        string nameVg = Console.ReadLine();
+
+                        Console.Write("Inserisci il riepilogo del videogame: ");
+                        string overview = Console.ReadLine();
+
+                        Console.Write("Inserisci la data di realizzazione del videogame (dd/MM/yyyy): ");
+                        DateTime releaseDate = DateTime.Parse(Console.ReadLine());
+
+                        Console.Write("Inserisci l'id della casa di produzione del videogame: ");
+                        long softwareHouseId = long.Parse(Console.ReadLine());
+
+                        Videogame newVideogame = new Videogame()
+                        {
+                            Name = nameVg,
+                            Overview = overview,
+                            Release_date = releaseDate,
+                            SoftwareHouseId = softwareHouseId
+                        };
+
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                db.Add(newVideogame);
+
+                                db.SaveChanges();
+
+                                Console.WriteLine("Il videogame è stato aggiunto con successo");
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
 
                         break;
 

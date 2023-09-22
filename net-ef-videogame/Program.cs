@@ -10,13 +10,20 @@
             Devono essere presenti tutte le funzionalità dell’esercizio originale.
 
             Aggiungiamo anche un’altra voce al menu :
-            - inserisci una nuova software house
+            1 - inserisci una nuova software house
+            2 - inserire un nuovo videogioco
+            3 - ricercare un videogioco per id
+            4 - ricercare tutti i videogiochi aventi il nome contenente una determinata stringa inserita in input
+            5 - cancellare un videogioco
+            6 - chiudere il programma
 
             Fatto questo, ogni volta che creiamo un nuovo videogioco dobbiamo abbinargli la software house che l’ha prodotto (che dobbiamo aver precedentemente inserito in tabella), chiedendo all’utente l’id della software house e impostandolo nell’entity del videogame.
 
             Realizzare quindi tutte le entity e le migration necessarie per creare il database e implementare tutte le richieste dell’esercizio.
 
              */
+
+            
 
 
         }

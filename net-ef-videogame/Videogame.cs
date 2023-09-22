@@ -17,9 +17,9 @@ namespace net_ef_videogame
         public SoftwareHouse SoftwareHouse { get; set; }
         
 
-        //public override string ToString()
-        //{
-        //    return $"id: {VideogameId} - nome: {Name} - overview: {Overview} - release date: {Release_date} - software house id: ";
-        //}
+        public override string ToString()
+        {
+            return $"VIDEOGAME TROVATO -> id: {VideogameId} - nome: {Name} - overview: {Overview} - release date: {Release_date} - software house id: {SoftwareHouseId}";
+        }
     }
 }

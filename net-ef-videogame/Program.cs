@@ -1,4 +1,6 @@
-﻿namespace net_ef_videogame
+﻿using Microsoft.Data.SqlClient;
+
+namespace net_ef_videogame
 {
     public class Program
     {
@@ -203,7 +205,27 @@
 
                         Console.WriteLine("Hai selezionato l'opzione 2: ricercare un videogioco per id");
 
+                        Console.Write("Inserisci l'id del videogame che vuoi cercare: ");
+                        long idVideogame = long.Parse(Console.ReadLine());
+
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
+
+                                Videogame videogameFounded = db.Videogames.Where(vg => vg.VideogameId == idVideogame).First();
+
+                                Console.WriteLine(videogameFounded);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+
                         break;
+
 
                     case 4:
 

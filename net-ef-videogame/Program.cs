@@ -231,6 +231,29 @@ namespace net_ef_videogame
 
                         Console.WriteLine("Hai selezionato l'opzione 3: ricercare tutti i videogiochi aventi il nome contenente una determinata stringa inserita in input");
 
+                        Console.Write("Inserisci una stringa per ricercare uno o più videogames che contengono nel nome la stringa da te inserita: ");
+                        string stringtoSearch = Console.ReadLine();
+
+                        using (VideogameContext db = new VideogameContext())
+                        {
+                            try
+                            {
+                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
+
+                                List<Videogame> videogamesFoundedByString = db.Videogames.Where(vg => vg.Name.Contains(stringtoSearch)).ToList();
+
+                                foreach(Videogame vg in videogamesFoundedByString)
+                                {
+
+                                    Console.WriteLine(vg);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                        }
+
                         break;
 
                     case 5:

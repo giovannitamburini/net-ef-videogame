@@ -28,63 +28,10 @@ namespace net_ef_videogame
             -------------------------------------------------------------------------------------
              */
 
-            // mi creo delle nuove Software House
-            //SoftwareHouse firstSoftwareHouse = new SoftwareHouse()
-            //{
-            //    Name = "Sony Interactive Entertainment",
-            //    TaxId = "120338SKJDD192",
-            //    City = "Tokyo",
-            //    Country = "Japan",
-            //    Videogames = new List<Videogame>()
-            //};
-
-            //SoftwareHouse secondSoftwareHouse = new SoftwareHouse()
-            //{
-            //    Name = "Activision Blizzard",
-            //    TaxId = "AAA392840294223",
-            //    City = "Santa Monica",
-            //    Country = "Califoria",
-            //    Videogames = new List<Videogame>()
-            //};
-
-            //SoftwareHouse thirdSoftwareHouse = new SoftwareHouse()
-            //{
-            //    Name = "Epic Games",
-            //    TaxId = "BBB04790938402",
-            //    City = "Cary",
-            //    Country = "North Carolina",
-            //    Videogames = new List<Videogame>()
-            //};
-
-            ////aggiungo le software house al databse
-            //using (VideogameContext db = new VideogameContext())
-            //{
-            //    try
-            //    {
-            //        db.Add(firstSoftwareHouse);
-            //        db.Add(secondSoftwareHouse);
-            //        db.Add(thirdSoftwareHouse);
-
-            //        db.SaveChanges();
-
-            //        Console.WriteLine("Le Software House sono state aggiunte con successo");
-
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine(ex.Message);
-            //    }
-
-
-            //}
-
-
             bool repeatMenu = true;
 
             while (repeatMenu)
             {
-
-
                 Console.WriteLine(@"
 1 - inserire una nuova software house
 2 - inserire un nuovo videogioco
@@ -97,7 +44,6 @@ namespace net_ef_videogame
 
                 Console.Write("Prego seleziona l'opzione che desideri effettuare: ");
                 int selectedOption = int.Parse(Console.ReadLine());
-
 
                 switch (selectedOption)
                 {
@@ -119,8 +65,6 @@ namespace net_ef_videogame
                         Console.Write("Inserisci il paese della sede della sh: ");
                         string country = Console.ReadLine();
 
-
-
                         SoftwareHouse newSoftwareHouse = new SoftwareHouse()
                         {
                             Name = name,
@@ -130,22 +74,15 @@ namespace net_ef_videogame
                             Videogames = new List<Videogame>()
                         };
 
+                        bool insertedSH = ManagerDBEFVideogame.AddSoftwareHouse(newSoftwareHouse);
 
-                        using (VideogameContext db = new VideogameContext())
+                        if (insertedSH)
                         {
-                            try
-                            {
-                                db.Add(newSoftwareHouse);
-
-                                db.SaveChanges();
-
-                                Console.WriteLine("La Software House è stata aggiunta con successo");
-
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            Console.WriteLine("Software House inserita con successo");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Inserimento non riuscito");
                         }
 
                         break;
@@ -165,22 +102,7 @@ namespace net_ef_videogame
                         Console.Write("Inserisci la data di realizzazione del videogame (dd/MM/yyyy): ");
                         DateTime releaseDate = DateTime.Parse(Console.ReadLine());
 
-                        using (VideogameContext db = new VideogameContext())
-                        {
-                            try
-                            {
-                                List<SoftwareHouse> softwareHouses = db.SoftwareHouses.ToList<SoftwareHouse>();
-
-                                foreach(SoftwareHouse sh in softwareHouses)
-                                {
-                                    Console.WriteLine(sh);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
-                        }
+                        ManagerDBEFVideogame.ShowSoftwareHouses();
 
                         Console.Write("Inserisci l'id della softwarehouse tra l'elenco fornito per associare il vg alla sh: ");
                         long softwareHouseId = long.Parse(Console.ReadLine());
@@ -193,21 +115,15 @@ namespace net_ef_videogame
                             SoftwareHouseId = softwareHouseId
                         };
 
-                        using (VideogameContext db = new VideogameContext())
+                        bool insertedVg = ManagerDBEFVideogame.AddVideogame(newVideogame);
+
+                        if (insertedVg)
                         {
-                            try
-                            {
-                                db.Add(newVideogame);
-
-                                db.SaveChanges();
-
-                                Console.WriteLine("Il videogame è stato aggiunto con successo");
-
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            Console.WriteLine("Videogame inserito con successo");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Inserimento non riuscito");
                         }
 
                         break;
@@ -219,24 +135,11 @@ namespace net_ef_videogame
                         Console.Write("Inserisci l'id del videogame che vuoi cercare: ");
                         long idVideogame = long.Parse(Console.ReadLine());
 
-                        using (VideogameContext db = new VideogameContext())
-                        {
-                            try
-                            {
-                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
+                        Videogame vgFounded = ManagerDBEFVideogame.SearchVideogameById(idVideogame);
 
-                                Videogame videogameFounded = db.Videogames.Where(vg => vg.VideogameId == idVideogame).First();
-
-                                Console.WriteLine(videogameFounded);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
-                        }
+                        Console.WriteLine($"Videogame trovato: {vgFounded}");
 
                         break;
-
 
                     case 4:
 
@@ -245,76 +148,49 @@ namespace net_ef_videogame
                         Console.Write("Inserisci una stringa per ricercare uno o più videogames che contengono nel nome la stringa da te inserita: ");
                         string stringtoSearch = Console.ReadLine();
 
-                        using (VideogameContext db = new VideogameContext())
+                        List<Videogame> listObteined = ManagerDBEFVideogame.GetVideogameByString(stringtoSearch);
+
+                        foreach (Videogame vg in listObteined)
                         {
-                            try
-                            {
-                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
-
-                                List<Videogame> videogamesFoundedByString = db.Videogames.Where(vg => vg.Name.Contains(stringtoSearch)).ToList();
-
-                                foreach (Videogame vg in videogamesFoundedByString)
-                                {
-
-                                    Console.WriteLine(vg);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            Console.WriteLine(vg);
                         }
 
                         break;
 
                     case 5:
+
                         Console.WriteLine("Hai selezionato l'opzione 5: cancellare un videogioco");
 
                         Console.Write("Inserisci l'id del videogame che vuoi eliminare: ");
                         long idVideogameToBeDeleted = long.Parse(Console.ReadLine());
 
-                        using (VideogameContext db = new VideogameContext())
+                        bool obtained = ManagerDBEFVideogame.DeleteVideogame(idVideogameToBeDeleted);
+
+                        if (obtained)
                         {
-                            try
-                            {
-                                Videogame videogameToDelete = db.Videogames.SingleOrDefault(vg => vg.VideogameId == idVideogameToBeDeleted);
-
-                                //Videogame videogamesFoundedByString = db.Videogames.Where(vg => vg.VideogameId == idVideogameToBeDeleted).First();
-
-                                db.Videogames.Remove(videogameToDelete);
-
-                                db.SaveChanges();
-
-                                Console.WriteLine($"Il videogame con id '{videogameToDelete.VideogameId}' e nome '{videogameToDelete.Name}' è stato eliminato");
-
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(ex.Message);
-                            }
+                            Console.WriteLine("Videogame eliminato con successo");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Qualcosa è andato storto,il videogame non è stato eliminato");
                         }
 
                         break;
 
                     case 6:
-                        Console.WriteLine("Hai selezionato l'opzione 6: stampa tutti i videogiochi prodotti da una software house");
 
-                        Console.Write("Inseirisci l'id della software house per ottenere i suoi videogames: ");
-                        long softwareHouseIdToSearch = long.Parse(Console.ReadLine());
+                        Console.WriteLine("Hai selezionato l'opzione 6: stampa tutti i videogiochi prodotti da una software house");
 
                         using (VideogameContext db = new VideogameContext())
                         {
                             try
                             {
-                                List<Videogame> videogames = db.Videogames.OrderBy(videogame => videogame.VideogameId).ToList();
+                                List<SoftwareHouse> softwareHouses = db.SoftwareHouses.ToList<SoftwareHouse>();
 
-                                List<Videogame> videogamesBySoftwareHouseId = db.Videogames.Where(vg => vg.SoftwareHouseId == softwareHouseIdToSearch).ToList();
-
-                                foreach(Videogame vg in videogamesBySoftwareHouseId)
+                                foreach (SoftwareHouse sh in softwareHouses)
                                 {
-                                    Console.WriteLine(vg);
+                                    Console.WriteLine(sh);
                                 }
-
                             }
                             catch (Exception ex)
                             {
@@ -322,6 +198,15 @@ namespace net_ef_videogame
                             }
                         }
 
+                        Console.Write("Inseirisci l'id della software house, tra le opzioni elencate, per ottenere i suoi videogames: ");
+                        long softwareHouseIdToSearch = long.Parse(Console.ReadLine());
+
+                        List<Videogame> listVgObteined = ManagerDBEFVideogame.getVideogamesListBySoftwareHouseId(softwareHouseIdToSearch);
+
+                        foreach (Videogame vg in listVgObteined)
+                        {
+                            Console.WriteLine(vg);
+                        }
 
                         break;
 

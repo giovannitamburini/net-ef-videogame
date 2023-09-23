@@ -19,7 +19,7 @@ namespace net_ef_videogame
 
         public override string ToString()
         {
-            return $"VIDEOGAME TROVATO -> id: {VideogameId} - nome: {Name} - overview: {Overview} - release date: {Release_date} - software house id: {SoftwareHouseId}";
+            return $"VIDEOGAME -> id: {VideogameId} - nome: {Name} - overview: {Overview} - release date: {Release_date} - software house id: {SoftwareHouseId}";
         }
     }
 }
